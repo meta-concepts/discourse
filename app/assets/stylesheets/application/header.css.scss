@@ -18,7 +18,7 @@
     position: fixed;
   }
   .contents {
-    margin: 10px 0;
+    margin: 0px 0;
   }
   .title {
     display: table;
@@ -30,7 +30,7 @@
     }
   }
   #site-logo {
-    width: 122px;
+    // width: 244px;
   }
   .icon-home {
     font-size: 20px;
@@ -39,6 +39,7 @@
   .panel {
     float: right;
     position: relative;
+    padding: 0 0;
   }
   .current-username {
     float: left;
@@ -139,7 +140,7 @@
 }
 
 #main-outlet {
-  padding-top: 75px;
+  padding-top: 90px;
 }
 
 // Dropdowns

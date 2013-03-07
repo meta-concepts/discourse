@@ -71,3 +71,7 @@ chef/tmp/*
 
 # exclude our git version file for now 
 config/version.rb
+
+# Sidekiq runtime data
+sidekiq-lock
+sidekiq.pid

@@ -40,7 +40,7 @@
   border-spacing: 0;
   border: 1px solid $topic-list-border-color;
   @include border-radius-all(4px 4px 0 0);
-  @include box-shadow(0 1px 3px rgba($black, 0.22));
+  @include box-shadow(6px 6px 8px rgba($black, 0.4));
   tbody tr {
     background-color: $white;
     &:nth-child(even) {
@@ -137,7 +137,7 @@
   }
   .avatar {
     &.latest {
-      @include box-shadow(0 0 6px 1px desaturate(lighten($link_color, 18%), 35%));
+      @include box-shadow(1px 1px 6px 1px rgba(180,39,39,0.5));
     }
   }
   .num {
@@ -192,7 +192,7 @@
     padding: 7px 10px;
     background-color: lighten($topic-list-th-background-color, 2%);
     @include border-radius-all(0 0 4px 4px);
-    @include box-shadow(0 1px 3px rgba($black, 0.22));
+    @include box-shadow(6px 6px 8px rgba($black, 0.4));
     figure {
       float: left;
       margin: 3px 7px 0 0;

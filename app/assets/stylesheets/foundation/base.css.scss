@@ -6,11 +6,13 @@
 // --------------------------------------------------
 
 html {
+  background: url(/assets/jerseybg.png) no-repeat center center fixed;
   color: $black;
   font: #{$base-font-size}/#{$base-line-height} $base-font-family;
   background-color: $base-background-color;
   overflow-y: scroll;
   -webkit-font-smoothing: subpixel-antialiased;
+  @include background-size(cover);
 }
 
 // Links
