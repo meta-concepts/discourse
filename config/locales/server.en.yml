@@ -15,9 +15,9 @@ en:
   is_invalid: "is invalid; try to be a little more descriptive"
   next_page: "next page &rarr;"
   by: "By"
-  topics_in_category: "Topics in the '%{category}' category"
+  topics_in_category: "Topics in the '%{category}' space"
   rss_posts_in_topic: "RSS feed of '%{topic}'"
-  rss_topics_in_category: "RSS feed of topics in the '%{category}' category"
+  rss_topics_in_category: "RSS feed of topics in the '%{category}' space"
   author_wrote: "%{author} wrote:"
 
   education:
@@ -34,7 +34,7 @@ en:
 
       - The first post defines your topic: What is this about? Who would be interested in it? Why does it matter? What kind of responses are you hoping for from the community?
 
-      - Try to choose the right words so others can *find* your topic. If it needs to be in a category, pick an appropriate category.
+      - Try to choose the right words so others can *find* your topic. If it needs to be in a space, pick an appropriate space.
 
       For more guidance, [see our FAQ](/faq). This panel will only appear for your first %{education_posts_text}.
 
@@ -70,8 +70,8 @@ en:
     no_info_other: "<div class='missing-profile'>%{name} hasn't entered anything in the About Me field of their profile yet</div>"
 
   category:
-    topic_prefix: "Category definition for %{category}"
-    replace_paragraph: "[Replace this first paragraph with a short description of your new category. Try to keep it below 200 characters.]"
+    topic_prefix: "Space definition for %{category}"
+    replace_paragraph: "[Replace this first paragraph with a short description of your new space. Try to keep it below 200 characters.]"
     post_template: "%{replace_paragraph}\n\nUse this space below for a longer description, as well as to establish any rules or discussion!"
 
   trust_levels:
@@ -271,13 +271,13 @@ en:
     imgur_api_key: "Your imgur.com api key, required for image upload to function"
     imgur_endpoint: "End point for uploading imgur.com images"
     max_image_width: "Maximum allowed width of images in a post"
-    category_featured_topics: "Number of topics displayed per category in the /categories page"
+    category_featured_topics: "Number of topics displayed per space in the /spaces page"
     add_rel_nofollow_to_user_content: "Add rel nofollow to all submitted user content, except for internal links (including parent domains) changing this requires you update all your baked markdown"
     exclude_rel_nofollow_domains: "A comma delimited list of domains where nofollow is not added (tld.com will automatically allow sub.tld.com as well)"
 
     post_excerpt_maxlength: "Maximum length in chars of a post's excerpt"
     post_onebox_maxlength: "Maximum length of a oneboxed Discourse post"
-    category_post_template: "The category definition post template used when you create a new category"
+    category_post_template: "The space definition post template used when you create a new space"
     new_topics_rollup: "How many new topics can be inserted on the topic list before rolling up into a count"
     onebox_max_chars: "Maximum characters a onebox will import from an external website into the post"
 
@@ -347,7 +347,7 @@ en:
     active_user_rate_limit_secs: "How frequently we update the 'last_seen_at' field, in seconds"
     previous_visit_timeout_hours: "How long a visit lasts before we consider it the 'previous' visit, in hours"
 
-    uncategorized_name: "The default category for topics that have no category in the /categories page"
+    uncategorized_name: "The default space for topics that have no space in the /spaces page"
     max_mentions_per_post: "Maximum number of @name notifications you can use in a single post"
 
     rate_limit_create_topic: "How many seconds, after creating a topic, before you can create another topic"
@@ -397,7 +397,7 @@ en:
 
   search:
     types:
-      category: 'Categories'
+      space: 'Spaces'
       topic: 'Topics'
       user: 'Users'
 
@@ -442,8 +442,8 @@ en:
     archived_disabled: "This topic is now unarchived. It is no longer frozen, and can be changed."
     closed_enabled: "This topic is now closed. New replies are no longer allowed."
     closed_disabled: "This topic is now opened. New replies are allowed."
-    pinned_enabled: "This topic is now pinned. It will appear at the top of its category."
-    pinned_disabled: "This topic is now unpinned. It will no longer appear at the top of its category."
+    pinned_enabled: "This topic is now pinned. It will appear at the top of its space."
+    pinned_disabled: "This topic is now unpinned. It will no longer appear at the top of its space."
     visible_enabled: "This topic is now visible. It will be displayed in topic lists."
     visible_disabled: "This topic is now invisible. It will no longer be displayed in any topic lists. The only way to access this topic is via direct link."
 

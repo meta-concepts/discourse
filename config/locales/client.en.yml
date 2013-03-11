@@ -7,7 +7,7 @@ en:
       topic: 'share a link to this topic'
       post: 'share a link to this post'
 
-    edit: 'edit the title and category of this topic'
+    edit: 'edit the title and space of this topic'
     not_implemented: "That feature hasn't been implemented yet, sorry!"
     no_value: "No"
     yes_value: "Yes"
@@ -333,12 +333,12 @@ en:
       uploading_image: "Uploading image"
 
     search:
-      title: "search for topics, posts, users, or categories"
+      title: "search for topics, posts, users, or spaces"
       placeholder: "type your search terms here"
       no_results: "No results found."
       searching: "Searching ..."
 
-    site_map: "go to another topic list or category"
+    site_map: "go to another topic list or space"
     go_back: 'go back'
     current_user: 'go to your user page'
 
@@ -354,7 +354,7 @@ en:
         read: "You haven't read any topics yet."
         posted: "You haven't posted in any topics yet."
         popular: "There are no popular topics. That's sad."
-        category: "There are no {{category}} topics."
+        space: "There are no {{category}} topics."
       bottom:
         popular: "There are no more popular topics to read."
         posted: "There are no more posted topics to read."
@@ -394,7 +394,7 @@ en:
       toggle_information: "toggle topic details"
       read_more_in_category: "Want to read more? Browse other topics in {{catLink}} or {{popularLink}}."
       read_more: "Want to read more? {{catLink}} or {{popularLink}}."
-      browse_all_categories: Browse all categories
+      browse_all_categories: Browse all spaces
       view_popular_topics: view popular topics
       suggest_create_topic: Why not create a topic?
       read_position_reset: "Your read position has been reset."
@@ -560,23 +560,23 @@ en:
           other: "Are you sure you want to delete all those posts?"
 
     category:
-      none: '(no category)'
+      none: '(no space)'
       edit: 'edit'
-      edit_long: "Edit Category"
-      view: 'View Topics in Category'
-      delete: 'Delete Category'
-      create: 'Create Category'
+      edit_long: "Edit Space"
+      view: 'View Topics in Space'
+      delete: 'Delete Space'
+      create: 'Create Space'
       more_posts: "view all {{posts}}..."
-      name: "Category Name"
+      name: "Space Name"
       description: "Description"
-      topic: "category topic"
+      topic: "space topic"
       color: "Color"
       name_placeholder: "Should be short and succinct."
       color_placeholder: "Any web color"
-      delete_confirm: "Are you sure you want to delete that category?"
-      list: "List Categories"
-      no_description: "There is no description for this category."
-      change_in_category_topic: "visit category topic to edit the description"
+      delete_confirm: "Are you sure you want to delete that space?"
+      list: "List Spaces"
+      no_description: "There is no description for this space."
+      change_in_category_topic: "visit space topic to edit the description"
 
     flagging:
       title: 'Why are you flagging this post?'
@@ -596,7 +596,7 @@ en:
       locked:
         help: "this topic is closed; it no longer accepts new replies"
       pinned:
-        help: "this topic is pinned; it will display at the top of its category"
+        help: "this topic is pinned; it will display at the top of its space"
       archived:
         help: "this topic is archived; it is frozen and cannot be changed"
       invisible:
@@ -611,10 +611,10 @@ en:
     activity: "Activity"
     likes: "Likes"
     top_contributors: "Participants"
-    category_title: "Category"
+    category_title: "Space"
     history: "History"
 
-    categories_list: "Categories List"
+    categories_list: "Spaces List"
 
     filters:
       popular:
@@ -627,9 +627,9 @@ en:
         title: "Read"
         help: "topics you've read"
       categories:
-        title: "Categories"
-        title_in: "Category - {{categoryName}}"
-        help: "all topics grouped by category"
+        title: "Spaces"
+        title_in: "Space - {{categoryName}}"
+        help: "all topics grouped by space"
       unread:
         title:
           zero: "Unread"
@@ -650,7 +650,7 @@ en:
           zero: "{{categoryName}}"
           one: "{{categoryName}} (1)"
           other: "{{categoryName}} ({{count}})"
-        help: "popular topics in the {{categoryName}} category"
+        help: "popular topics in the {{categoryName}} space"
 
   # This section is exported to the javascript for i18n in the admin section
   admin_js:
