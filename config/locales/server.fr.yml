@@ -9,7 +9,7 @@ fr:
   title: "Discourse"
   topics: "Discussions"
   loading: "Chargement"
-  powered_by: 'Propulsé par <a href="http://www.discourse.org">Discourse</a>, best viewed with JavaScript enabled'
+  powered_by_html: 'Propulsé par <a href="http://www.discourse.org">Discourse</a>, best viewed with JavaScript enabled'
 
   via: "%{username} via %{site_name}"
   is_reserved: "est réservé"
@@ -20,7 +20,7 @@ fr:
   has_already_been_used: "a déjà été utilisé"
   invalid_characters: "contient des caractères invalides"
   is_invalid: "est invalide; essayez d'être plus précis"
-  next_page: "page suivante &rarr;"
+  next_page: "page suivante →"
   by: "Par"
   topics_in_category: "Discussions dans la catégorie '%{category}'"
   rss_posts_in_topic: "Flux RSS de '%{topic}'"
@@ -252,8 +252,12 @@ fr:
   reports:
     visits:
       title: "Visites utilisateur par jour"
-      xaxis: "Jour"
-      yaxis: "Visites"
+    signups:
+      title: Nouveaux utilisateurs
+    topics:
+      title: Nouvelles discussions
+    posts:
+      title: Nouveaux messages
 
   site_settings:
     default_locale: "Le langage par défaut de cette instance de Discourse (code ISO 639-1)"
@@ -261,6 +265,7 @@ fr:
     max_post_length: "longueur maximale des messages"
     min_topic_title_length: "longueur minimale des titres de discussion"
     max_topic_title_length: "longueur maximale des titres de discussion"
+    min_search_term_length: "longueur mimimale du texte saisie avant de lancer une recherche"
     allow_duplicate_topic_titles: "deux utilisateurs peuvent-ils créer des discussions avec le même titre"
     unique_posts_mins: "Combien de temps avant qu'un utilisateur puisse poster le même contenu à nouveau"
     enforce_global_nicknames: "Imposer un pseudo global. Note: fonctionne uniquement pendant la phase initiale de paramétrage."
@@ -288,8 +293,8 @@ fr:
     category_post_template: "Le modèle de message de définition d'une catégorie utilisé lorsque vous créez une nouvelle catégorie"
     onebox_max_chars: "Nombre maximal de caractères qu'une boîte peut importer en blob de texte."
 
-    logo_url: "Le logo de votre site, par exemple: http://xyz.com/x.png"
-    logo_small_url: "La version minifiée du logo de votre site (affichée sur les pages de discussions) ex: http://xyz.com/x-min.png"
+    logo_url: "Le logo de votre site, par exemple: http://example.com/logo.png"
+    logo_small_url: "La version minifiée du logo de votre site (affichée sur les pages de discussions) ex: http://example.com/logo-small.png"
     favicon_url: "Le favicon de votre site"
     notification_email: "L'adresse email utilisée pour notifier les utilisateurs de mots de passe perdus, d'activation de compte, etc."
     use_ssl: "Le site doit-il être accessible via SSL?"
@@ -446,11 +451,11 @@ fr:
 
   topic_statuses:
     archived_enabled: "Cette discussion est maintenant archivée. Elle est gelée et ne peut plus être modifiée."
-    archived_disabled: "Cette discussion est maintenant  désarchivée. Elle n'est plus gelée, et peut être modifiée."
-    closed_enabled: "Cette discussion est maintenant  fermée. Les nouvelles réponses ne sont plus autorisées."
-    closed_disabled: "Cette discussion est maintenant  ouverte. Les nouvelles réponses sont autorisées."
-    pinned_enabled: "Cette discussion est maintenant  épinglée. Elle apparaîtra en haut de sa catégorie."
-    pinned_disabled: "Cette discussion est maintenant  désépinglée. Elle n'apparaîtra plus en haut de sa categorie."
+    archived_disabled: "Cette discussion est maintenant désarchivée. Elle n'est plus gelée, et peut être modifiée."
+    closed_enabled: "Cette discussion est maintenant fermée. Les nouvelles réponses ne sont plus autorisées."
+    closed_disabled: "Cette discussion est maintenant ouverte. Les nouvelles réponses sont autorisées."
+    pinned_enabled: "Cette discussion est maintenant épinglée. Elle apparaîtra en haut de sa catégorie jusqu'à ce qu'elle soit désépinglée par un modérateur, ou par chaque utilisateur utilisant le bouton Désépingler."
+    pinned_disabled: "Cette discussion est maintenant désépinglée. Elle n'apparaîtra plus en haut de sa categorie."
     visible_enabled: "Cette discussion est maintenant visible. Elle sera affichée dans la liste des discussions."
     visible_disabled: "Cette discussion est maintenant invisible. Elle ne sera plus affichée dans la liste des discussions. Le seul moyen d'y accéder est par lien direct."
 
@@ -463,6 +468,7 @@ fr:
     not_activated: "Vous ne pouvez pas vous connecter pour le moment. Nous vous avons envoyé un mail d'activation. Merci de suivre les instructions qui y sont contenues pour activer votre compte."
     errors: "%{errors}"
     not_available: "Pas disponible. Essayez %{suggestion}?"
+    something_already_taken: "Quelque chose s'est mal passé. Peut-être que votre nom d'utilisateur ou adresse email est déjà enregistré ? Essayez le lien : j'ai oublié mon mot de passe.."
     omniauth_error: "Désolé, il y a eu une erreur lors de l'autorisation de votre compte %{strategy}. Vous n'avez peut-être pas approuvé l'autorisation ?"
     omniauth_error_unknown: "Quelque chose s'est mal passé lors de votre connexion, merci de réessayer."
 

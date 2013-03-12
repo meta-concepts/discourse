@@ -1,9 +1,5 @@
 module Search
 
-  def self.min_search_term_length
-    3
-  end
-
   def self.per_facet
     5
   end
@@ -97,15 +93,15 @@ module Search
     end
   end
 
-  def self.query(term, type_filter=nil)
+  def self.query(term, type_filter=nil, min_search_term_length=3)
 
     return nil if term.blank?
-    sanitized_term = PG::Connection.escape_string(term.gsub(/[:()&!]/,'')) # Instead of original term.gsub(/[^0-9a-zA-Z_ ]/, '')
 
     # We are stripping only symbols taking place in FTS and simply sanitizing the rest.
+    sanitized_term = PG::Connection.escape_string(term.gsub(/[:()&!]/,''))
 
     # really short terms are totally pointless
-    return nil if sanitized_term.blank? || sanitized_term.length < self.min_search_term_length
+    return nil if sanitized_term.blank? || sanitized_term.length < min_search_term_length
 
     terms = sanitized_term.split
     terms.map! {|t| "#{t}:*"}
@@ -159,7 +155,11 @@ module Search
       type = row.delete('type')
 
       # Add the slug for topics
-      row['url'].gsub!('slug', Slug.for(row['title'])) if type == 'topic'
+      if type == 'topic'
+        new_slug = Slug.for(row['title'])
+        new_slug = "topic" if new_slug.blank?
+        row['url'].gsub!('slug', new_slug)
+      end
 
       # Remove attributes when we know they don't matter
       row.delete('id')
@@ -176,12 +176,14 @@ module Search
     result = grouped.map do |type, results|
       more = type_filter.blank? && (results.size > Search.per_facet)
       results = results[0..([results.length, Search.per_facet].min - 1)] if type_filter.blank?
-
-      {type: type,
-       name: I18n.t("search.types.#{type}"),
-       more: more,
-       results: results}
+      {
+        type: type,
+        name: I18n.t("search.types.#{type}"),
+        more: more,
+        results: results
+      }
     end
+
     result
   end
 

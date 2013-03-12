@@ -193,12 +193,12 @@ describe Topic do
       it "enqueues a job to notify users" do
         topic.stubs(:add_moderator_post)
         Jobs.expects(:enqueue).with(:notify_moved_posts, post_ids: [p1.id, p4.id], moved_by_id: user.id)
-        topic.move_posts(user, "new topic name", [p1.id, p4.id])
+        topic.move_posts(user, "new testing topic name", [p1.id, p4.id])
       end
 
       it "adds a moderator post at the location of the first moved post" do
         topic.expects(:add_moderator_post).with(user, instance_of(String), has_entries(post_number: 2))
-        topic.move_posts(user, "new topic name", [p2.id, p4.id])
+        topic.move_posts(user, "new testing topic name", [p2.id, p4.id])
       end
 
     end
@@ -206,11 +206,11 @@ describe Topic do
     context "errors" do
 
       it "raises an error when one of the posts doesn't exist" do
-        lambda { topic.move_posts(user, "new topic name", [1003]) }.should raise_error(Discourse::InvalidParameters)
+        lambda { topic.move_posts(user, "new testing topic name", [1003]) }.should raise_error(Discourse::InvalidParameters)
       end
 
       it "raises an error if no posts were moved" do
-        lambda { topic.move_posts(user, "new topic name", []) }.should raise_error(Discourse::InvalidParameters)
+        lambda { topic.move_posts(user, "new testing topic name", []) }.should raise_error(Discourse::InvalidParameters)
       end
 
     end
@@ -221,7 +221,7 @@ describe Topic do
         TopicUser.update_last_read(user, topic.id, p4.post_number, 0)
       end
 
-      let!(:new_topic) { topic.move_posts(user, "new topic name", [p2.id, p4.id]) }
+      let!(:new_topic) { topic.move_posts(user, "new testing topic name", [p2.id, p4.id]) }
 
 
       it "updates the user's last_read_post_number" do
@@ -547,8 +547,12 @@ describe Topic do
           @topic.reload
         end
 
+        it "doesn't have a pinned_at" do
+          @topic.pinned_at.should be_blank
+        end
+
         it 'should not be pinned' do
-          @topic.should_not be_pinned
+          @topic.pinned_at.should be_blank
         end
 
         it 'adds a moderator post' do
@@ -562,13 +566,13 @@ describe Topic do
 
       context 'enable' do
         before do
-          @topic.update_attribute :pinned, false
+          @topic.update_attribute :pinned_at, nil
           @topic.update_status('pinned', true, @user)
           @topic.reload
         end
 
         it 'should be pinned' do
-          @topic.should be_pinned
+          @topic.pinned_at.should be_present
         end
 
         it 'adds a moderator post' do
@@ -588,7 +592,7 @@ describe Topic do
           @topic.reload
         end
 
-        it 'should not be pinned' do
+        it 'should not be archived' do
           @topic.should_not be_archived
         end
 
@@ -866,8 +870,12 @@ describe Topic do
       topic.should be_visible
     end
 
+    it "has an empty pinned_at" do
+      topic.pinned_at.should be_blank
+    end
+
     it 'is not pinned' do
-      topic.should_not be_pinned
+      topic.pinned_at.should be_blank
     end
 
     it 'is not closed' do

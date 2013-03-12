@@ -7,7 +7,7 @@ require './lib/discourse_plugin_registry'
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  Bundler.require(*Rails.groups(:assets => %w(development test profile)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -36,7 +36,7 @@ module Discourse
 
     # Precompile all available locales
     Dir.glob("app/assets/javascripts/locales/*.js.erb").each do |file|
-      config.assets.precompile << "locales/#{file.match(/([a-z]+\.js)\.erb$/)[1]}"
+      config.assets.precompile << "locales/#{file.match(/([a-z_A-Z]+\.js)\.erb$/)[1]}"
     end
 
     # Activate observers that should always be running.
@@ -88,11 +88,9 @@ module Discourse
     # Our templates shouldn't start with 'discourse/templates'
     config.handlebars.templates_root = 'discourse/templates'
 
+    require 'discourse_redis'
     # Use redis for our cache
-    redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
-    redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
-    config.cache_store = redis_store
+    config.cache_store = DiscourseRedis.new_redis_store
 
     # Test with rack::cache disabled. Nginx does this for us
     config.action_dispatch.rack_cache =  nil
