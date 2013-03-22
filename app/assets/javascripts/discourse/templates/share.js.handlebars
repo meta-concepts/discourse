@@ -1,12 +1,11 @@
 <h3>{{view.title}}</h3>
 <div><input type='text' /></div>
 <div class="likebuttons">
-  <div class="fb-like" {{bindAttr data-href="posturl"}} data-font="lucida grande" data-send="true" data-show-faces="true" data-width="280" ref="share">
-  </div>
+  {{{facebookl}}}
   <div class="linkedin" style="margin-top: 4px">
       <script type="IN/Share" data-counter="right"></script>
   </div>
-  <a href="https://twitter.com/share" class="twitter-share-button" {{bindAttr data-url="posturl"}} data-via="BootstrapJersey">Tweet</a>
+  {{{twitterl}}}
 </div>
 
 <div class='link'>

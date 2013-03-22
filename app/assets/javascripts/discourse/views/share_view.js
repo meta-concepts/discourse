@@ -49,8 +49,8 @@ Discourse.ShareView = Discourse.View.extend({
       }
       _this.get('controller').shareLink(e, url);
       Ember.run.scheduleOnce('afterRender', this, function(){
-        twttr.widgets.load();
         FB.XFBML.parse();
+        twttr.widgets.load();
       });
       return false;
     });

@@ -8,9 +8,6 @@
 **/
 Discourse.ShareController = Discourse.Controller.extend({
 
-  // The URL of the post
-  posturl: '/default',
-
   // When the user clicks the post number, we pop up a share box
   shareLink: function(e, url) {
     var x;
@@ -23,7 +20,8 @@ Discourse.ShareController = Discourse.Controller.extend({
       top: "" + (e.pageY - 100) + "px"
     });
     this.set('link', url);
-    this.set('posturl',url);
+    this.set('facebookl',"<div class='fb-like' data-href='" + url + "' data-font='lucida grande' data-send='true' data-show-faces='true' data-width='280' ref='share'></div>");
+    this.set('twitterl',"<a href='https://twitter.com/share' class='twitter-share-button' data-via='BootstrapJersey' data-url='" + url + "'>Tweet</a>");
     return false;
   },
 
