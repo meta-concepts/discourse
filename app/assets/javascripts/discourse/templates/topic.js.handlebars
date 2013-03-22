@@ -30,6 +30,7 @@
               {{#if view.topic.can_edit}}
                 <a href='#' {{action editTopic target="view"}} class='edit-topic' title='{{i18n edit}}'><i class="icon-pencil"></i></a>
               {{/if}}
+              {{view Discourse.LikeView id="likebuttons"}}
             </h1>
           {{/if}}
         </div>

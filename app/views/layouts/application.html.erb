@@ -21,6 +21,23 @@
   </head>
 
   <body>
+  	<div id="fb-root"></div>
+  	<script>
+  	window.fbAsyncInit = function() {
+  		FB.init({appId: '618898281458655', status: true, cookie: true, xfbml: true});
+  	};
+  	(function(d, s, id) {
+  	  var js, fjs = d.getElementsByTagName(s)[0];
+  	  if (d.getElementById(id)) return;
+  	  js = d.createElement(s); js.id = id;
+  	  js.src = "//connect.facebook.net/en_GB/all.js";
+  	  fjs.parentNode.insertBefore(js, fjs);
+  	}(document, 'script', 'facebook-jssdk'));</script>
+
+    <script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
+
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
     <%=SiteCustomization.custom_header(session[:preview_style])%>
     <section id='main'>
       <section id='loading-message' style='display:none'><%= t :loading %>...</section>

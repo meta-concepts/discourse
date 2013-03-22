@@ -48,6 +48,10 @@ Discourse.ShareView = Discourse.View.extend({
         url = window.location.protocol + "//" + window.location.host + url;
       }
       _this.get('controller').shareLink(e, url);
+      Ember.run.scheduleOnce('afterRender', this, function(){
+        twttr.widgets.load();
+        FB.XFBML.parse();
+      });
       return false;
     });
   },
