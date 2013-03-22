@@ -75,3 +75,6 @@ config/version.rb
 # Sidekiq runtime data
 sidekiq-lock
 sidekiq.pid
+
+#Apple
+.com.apple.timemachine.supported
