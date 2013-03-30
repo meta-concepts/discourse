@@ -14,7 +14,7 @@ class Category < ActiveRecord::Base
   has_many :featured_users, through: :category_featured_users, source: :user
 
   validates :user_id, presence: true
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true, length: { in: 1..50 }
   validate :uncategorized_validator
 
   before_save :ensure_slug
@@ -22,12 +22,12 @@ class Category < ActiveRecord::Base
   after_create :create_category_definition
   after_destroy :invalidate_site_cache
 
-  scope :popular, ->{ order('topic_count desc') }
+  scope :latest, ->{ order('topic_count desc') }
 
   delegate :post_template, to: 'self.class'
 
   def create_category_definition
-    create_topic(title: I18n.t("category.topic_prefix", category: name), user: user, pinned_at: Time.now)
+    create_topic!(title: I18n.t("category.topic_prefix", category: name), user: user, pinned_at: Time.now)
     update_column(:topic_id, topic.id)
     topic.update_column(:category_id, id)
     topic.posts.create(raw: post_template, user: user)

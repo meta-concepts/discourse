@@ -1,3 +1,4 @@
+# encoding: utf-8
 # This file contains content for the client portion of Discourse, sent out
 # to the Javascript app.
 
@@ -6,6 +7,10 @@ en:
     share:
       topic: 'share a link to this topic'
       post: 'share a link to this post'
+      close: 'close'
+      twitter: 'share this link on Twitter'
+      facebook: 'share this link on Facebook'
+      google+: 'share this link on Google+'
 
     edit: 'edit the title and space of this topic'
     not_implemented: "That feature hasn't been implemented yet, sorry!"
@@ -22,7 +27,6 @@ en:
     links: Links
     faq: "FAQ"
     you: "You"
-    ok: "ok"
     or: "or"
     now: "just now"
 
@@ -62,6 +66,8 @@ en:
       change_password: "change"
       invited_by: "Invited By"
       trust_level: "Trust Level"
+      external_links_in_new_tab: "Open all external links in a new tab"
+      enable_quoting: "Enable quote reply for highlighted text"
 
       change_username:
         action: "change"
@@ -92,7 +98,8 @@ en:
         ok: "Your name looks good."
       username:
         title: "Username"
-        instructions: "People can mention you as @{{username}}."
+        instructions: "Must be unique, no spaces. People can mention you as @username."
+        short_instructions: "People can mention you as @{{username}}."
         available: "Your username is available."
         global_match: "Email matches the registered username."
         global_mismatch: "Already registered. Try {{suggestion}}?"
@@ -101,6 +108,9 @@ en:
         too_long: "Your username is too long."
         checking: "Checking username availability..."
         enter_email: 'Username found. Enter matching email.'
+
+      password_confirmation:
+        title: "Password Again"
 
       last_posted: "Last Post"
       last_emailed: "Last Emailed"
@@ -195,8 +205,10 @@ en:
 
     best_of:
       title: "Best Of"
+      enabled_description: You are currently viewing the "Best Of" view of this topic.
       description: "There are <b>{{count}}</b> posts in this topic. That's a lot! Would you like to save time by switching your view to show only the posts with the most interactions and responses?"
-      button: 'Switch to "Best Of" view'
+      enable: 'Switch to "Best Of" view'
+      disable: 'Cancel "Best Of"'
 
     private_message_info:
       title: "Private Conversation"
@@ -237,35 +249,41 @@ en:
       resend_activation_email: "Click here to send the activation email again."
       sent_activation_email_again: "We sent another activation email to you at <b>{{currentEmail}}</b>. It might take a few minutes for it to arrive; be sure to check your spam folder."
       google:
-        title: "Log In with Google"
+        title: "with Google"
         message: "Authenticating with Google (make sure pop up blockers are not enabled)"
       twitter:
-        title: "Log In with Twitter"
+        title: "with Twitter"
         message: "Authenticating with Twitter (make sure pop up blockers are not enabled)"
       facebook:
-        title: "Log In with Facebook"
+        title: "with Facebook"
         message: "Authenticating with Facebook (make sure pop up blockers are not enabled)"
       yahoo:
-        title: "Log In with Yahoo"
+        title: "with Yahoo"
         message: "Authenticating with Yahoo (make sure pop up blockers are not enabled)"
       github:
-        title: "Log In with Github"
-        message: "Authenticating with Github (make sure pop up blockers are not enabled)"
+        title: "with GitHub"
+        message: "Authenticating with GitHub (make sure pop up blockers are not enabled)"
       persona:
-        title: "Log In with Mozilla Persona"
-        message: "Authenticating with Persona (make sure pop up blockers are not enabled)"
+        title: "with Persona"
+        message: "Authenticating with Mozilla Persona (make sure pop up blockers are not enabled)"
 
     composer:
+      posting_not_on_topic: "You are replying to the topic \"{{title}}\", but you are currently viewing a different topic."
       saving_draft_tip: "saving"
       saved_draft_tip: "saved"
       saved_local_draft_tip: "saved locally"
+      similar_topics: "Your topic is similar to..."
+      drafts_offline: "drafts offline"
 
       min_length:
-        at_least: "enter at least {{n}} characters"
-        more: "{{n}} to go..."
+        need_more_for_title: "{{n}} to go for the title"
+        need_more_for_reply: "{{n}} to go for the reply"
 
       save_edit: "Save Edit"
+      reply_original: "Reply on Original Topic"
+      reply_here: "Reply Here"
       reply: "Reply"
+      cancel: "Cancel"
       create_topic: "Create Topic"
       create_pm: "Create Private Message"
 
@@ -317,7 +335,7 @@ en:
       posted: "<i title='replied' class='icon icon-reply'></i> {{username}} {{link}}"
       edited: "<i title='edited' class='icon icon-pencil'></i> {{username}} {{link}}"
       liked: "<i title='liked' class='icon icon-heart'></i> {{username}} {{link}}"
-      private_message: "<i class='icon icon-lock' title='private message'></i> {{username}} sent you a private message: {{link}}"
+      private_message: "<i class='icon icon-envelope-alt' title='private message'></i> {{username}} sent you a private message: {{link}}"
       invited_to_private_message: "{{username}} invited you to a private conversation: {{link}}"
       invitee_accepted: "<i title='accepted your invitation' class='icon icon-signin'></i> {{username}} accepted your invitation"
       moved_post: "<i title='moved post' class='icon icon-arrow-right'></i> {{username}} moved post to {{link}}"
@@ -344,7 +362,9 @@ en:
 
     favorite:
       title: 'Favorite'
-      help: 'add this topic to your favorites list'
+      help:
+        star: 'add this topic to your favorites list'
+        unstar: 'remove this topic from your favorites list'
 
     topics:
       none:
@@ -353,10 +373,12 @@ en:
         new: "You have no new topics to read."
         read: "You haven't read any topics yet."
         posted: "You haven't posted in any topics yet."
-        popular: "There are no popular topics. That's sad."
-        space: "There are no {{category}} topics."
+        latest: "There are no latest topics. That's sad."
+        hot: "There are no hot topics."
+        category: "There are no {{category}} topics."
       bottom:
-        popular: "There are no more popular topics to read."
+        latest: "There are no more latest topics to read."
+        hot: "There are no more hot topics to read."
         posted: "There are no more posted topics to read."
         read: "There are no more read topics to read."
         new: "There are no more new topics to read."
@@ -392,14 +414,16 @@ en:
       options: "Topic Options"
       show_links: "show links within this topic"
       toggle_information: "toggle topic details"
-      read_more_in_category: "Want to read more? Browse other topics in {{catLink}} or {{popularLink}}."
-      read_more: "Want to read more? {{catLink}} or {{popularLink}}."
+      read_more_in_category: "Want to read more? Browse other topics in {{catLink}} or {{latestLink}}."
+      read_more: "Want to read more? {{catLink}} or {{latestLink}}."
       browse_all_categories: Browse all spaces
-      view_popular_topics: view popular topics
+
+      view_latest_topics: view latest topics
       suggest_create_topic: Why not create a topic?
       read_position_reset: "Your read position has been reset."
       jump_reply_up: jump to earlier reply
       jump_reply_down: jump to later reply
+      deleted: "The topic has been deleted"
 
       progress:
         title: topic progress
@@ -481,8 +505,10 @@ en:
       login_reply: 'Log In to Reply'
 
       filters:
-        user: "You're viewing only posts by specific user(s)."
-        best_of: "You're viewing only the 'Best Of' posts."
+        user:
+          one: "You're viewing only {{filtered_posts_count}} posts by a specific user."
+          other: "You're viewing only {{filtered_posts_count}} posts made by {{count}} specific users."
+        best_of: "You're viewing the {{filtered_posts_count}} best posts of {{posts_count}} in the topic."
         cancel: "Show all posts in this topic again."
 
       move_selected:
@@ -506,7 +532,9 @@ en:
     post:
       reply: "Replying to {{link}} by {{replyAvatar}} {{username}}"
       reply_topic: "Reply to {{link}}"
-      edit: "Edit {{link}}"
+      quote_reply: "quote reply"
+      edit: "Editing {{link}} by {{replyAvatar}} {{username}}"
+      post_number: "post {{number}}"
       in_reply_to: "in reply to"
       reply_as_new_topic: "Reply as new Topic"
       continue_discussion: "Continuing the discussion from {{postLink}}:"
@@ -521,6 +549,7 @@ en:
         create: "Sorry, there was an error creating your post. Please try again."
         edit: "Sorry, there was an error editing your post. Please try again."
         upload: "Sorry, there was an error uploading that file. Please try again."
+        upload_too_large: "Sorry, the file you are trying to upload is too big (maximum size is {{max_size_kb}}kb), please resize it and try again."
 
       abandon: "Are you sure you want to abandon your post?"
 
@@ -574,13 +603,16 @@ en:
       name: "Space Name"
       description: "Description"
       topic: "space topic"
-      color: "Color"
+      badge_colors: "Badge colors"
+      background_color: "Background color"
+      foreground_color: "Foreground color"
       name_placeholder: "Should be short and succinct."
       color_placeholder: "Any web color"
       delete_confirm: "Are you sure you want to delete that space?"
       list: "List Spaces"
       no_description: "There is no description for this space."
       change_in_category_topic: "visit space topic to edit the description"
+      hotness: "Hotness"
 
     flagging:
       title: 'Why are you flagging this post?'
@@ -617,13 +649,17 @@ en:
     top_contributors: "Participants"
     category_title: "Space"
     history: "History"
+    changed_by: "by {{author}}"
 
     categories_list: "Spaces List"
 
     filters:
-      popular:
-        title: "Popular"
-        help: "the most popular recent topics"
+      latest:
+        title: "Latest"
+        help: "the most recent topics"
+      hot:
+        title: "Hot"
+        help: "a selection of the hottest topics"
       favorited:
         title: "Favorited"
         help: "topics you marked as favorites"
@@ -645,7 +681,7 @@ en:
           zero: "New"
           one: "New (1)"
           other: "New ({{count}})"
-        help: "new topics since your last visit, and tracked topics with new posts"
+        help: "new topics since your last visit"
       posted:
         title: "My Posts"
         help: "topics you have posted in"
@@ -665,13 +701,17 @@ en:
 
       dashboard:
         title: "Admin Dashboard"
-        version: "Installed version"
-        up_to_date: "You are running the latest version of Discourse."
+        version: "Version"
+        up_to_date: "You're up to date!"
         critical_available: "A critical update is available."
         updates_available: "Updates are available."
         please_upgrade: "Please upgrade!"
-        latest_version: "Latest version"
+        installed_version: "Installed"
+        latest_version: "Latest"
         update_often: 'Please update often!'
+        problems_found: "Some problems have been found with your installation of Discourse:"
+        moderators: 'Moderators:'
+        admins: 'Admins:'
 
         reports:
           today: "Today"
@@ -679,6 +719,15 @@ en:
           last_7_days: "Last 7 Days"
           last_30_days: "Last 30 Days"
           all_time: "All Time"
+          7_days_ago: "7 Days Ago"
+          30_days_ago: "30 Days Ago"
+          all: "All"
+          view_table: "View as Table"
+          view_chart: "View as Bar Chart"
+
+      commits:
+        latest_changes: "Latest changes."
+        by: "by"
 
       flags:
         title: "Flags"
@@ -689,7 +738,10 @@ en:
         delete: "Delete Post"
         delete_title: "delete post (if its the first post delete topic)"
         flagged_by: "Flagged by"
+        error: "Something went wrong"
 
+      api:
+        title: "API"
       customize:
         title: "Customize"
         header: "Header"
@@ -699,6 +751,8 @@ en:
         preview: "preview"
         undo_preview: "undo preview"
         save: "Save"
+        new: "New"
+        new_style: "New Style"
         delete: "Delete"
         delete_confirm: "Delete this customization?"
 

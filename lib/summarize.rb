@@ -1,10 +1,9 @@
 # Summarize a HTML field into regular text. Used currently
 # for meta tags
 
+require 'sanitize'
+
 class Summarize
-  include ActionView::Helpers
-  require 'rubygems'
-  require 'sanitize'
 
   def initialize(text)
     @text = text
@@ -17,7 +16,6 @@ class Summarize
   def summary
     return nil if @text.blank?
 
-    #result = sanitize(@text, tags: [], attributes: [])
     result = Sanitize.clean(@text)
     result.gsub!(/\n/, ' ')
     result.strip!

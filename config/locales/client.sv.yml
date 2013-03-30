@@ -1,3 +1,4 @@
+# encoding: utf-8
 # This file contains content for the client portion of Discourse, sent out
 # to the Javascript app.
 
@@ -249,8 +250,8 @@ sv:
         title: "Logga In med Yahoo"
         message: "Autentiserar med Yahoo (kolla så att pop up-blockare inte är aktiverade)"
       github:
-        title: "Logga In med Github"
-        description: "Autentiserar med Github (kolla så att pop up-blockare inte är aktiverade)"
+        title: "Logga In med GitHub"
+        description: "Autentiserar med GitHub (kolla så att pop up-blockare inte är aktiverade)"
 
     composer:
       saving_draft_tip: "sparar"
@@ -287,7 +288,7 @@ sv:
       posted: "<i title='svarad' class='icon icon-reply'></i> {{username}} {{link}}"
       edited: "<i title='ändrad' class='icon icon-pencil'></i> {{username}} {{link}}"
       liked: "<i title='gillad' class='icon icon-heart'></i> {{username}} {{link}}"
-      private_message: "<i class='icon icon-lock' title='privat meddelande'></i> {{username}} skickade dig ett privat meddelande: {{link}}"
+      private_message: "<i class='icon icon-envelope-alt' title='privat meddelande'></i> {{username}} skickade dig ett privat meddelande: {{link}}"
       invited_to_private_message: "{{username}} bjöd in dig till en privat konversation: {{link}}"
       invitee_accepted: "<i title='accepterade din inbjudan' class='icon icon-signin'></i> {{username}} accepterade din inbjudan"
       moved_post: "<i title='flyttade inlägg' class='icon icon-arrow-right'></i> {{username}} flyttade inlägg till {{link}}"
@@ -322,10 +323,10 @@ sv:
         new: "Du har inga nya trådar att läsa."
         read: "Du har inte läst några trådar än."
         posted: "Du har inte postat i några trådar än."
-        popular: "Det finns inga populära trådar. Det är lite sorgligt."
+        latest: "Det finns inga populära trådar. Det är lite sorgligt."
         category: "Det finns inga {{category}}-trådar."
       bottom:
-        popular: "Det finns inga fler populära trådar att läsa."
+        latest: "Det finns inga fler populära trådar att läsa."
         posted: "Det finns inga fler postade trådar att läsa"
         read: "Det finns inga fler lästa trådar att läsa."
         new: "Det finns inga fler nya trådar att läsa."
@@ -362,10 +363,11 @@ sv:
       options: "Trådinställningar"
       show_links: "visa länkar som finns i den här tråden"
       toggle_information: "slå på/av tråddetaljer"
-      read_more_in_category: "Vill du läsa mer? Bläddra bland andra trådar i {{catLink}} eller {{popularLink}}."
-      read_more: "Vill du läsa mer? {{catLink}} eller {{popularLink}}."
+      read_more_in_category: "Vill du läsa mer? Bläddra bland andra trådar i {{catLink}} eller {{latestLink}}."
+      read_more: "Vill du läsa mer? {{catLink}} eller {{latestLink}}."
       browse_all_categories: Bläddra bland alla kategorier
-      view_popular_topics: visa populära trådar
+
+      view_latest_topics: visa populära trådar
       suggest_create_topic: Varför inte skapa en tråd?
       read_position_reset: "Din läsposition har blivit återställd."
       jump_reply_up: hoppa till tidigare svar
@@ -586,7 +588,7 @@ sv:
     categories_list: "Kategorilista"
 
     filters:
-      popular:
+      latest:
         title: "Populära"
         help: "det populäraste trådarna nyligen"
       favorited:

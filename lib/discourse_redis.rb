@@ -3,10 +3,20 @@
 #
 class DiscourseRedis
 
+  def self.raw_connection(config = nil)
+    config ||= self.config
+    redis_opts = {host: config['host'], port: config['port'], db: config['db']}
+    redis_opts[:password] = config['password'] if config['password']
+    Redis.new(redis_opts)
+  end
+
+  def self.config
+    YAML.load(ERB.new(File.new("#{Rails.root}/config/redis.yml").read).result)[Rails.env]
+  end
+
   def initialize
-    @config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    redis_opts = {:host => @config['host'], :port => @config['port'], :db => @config['db']}
-    @redis = Redis.new(redis_opts)
+    @config = DiscourseRedis.config
+    @redis = DiscourseRedis.raw_connection(@config)
   end
 
   # prefix the key with the namespace
@@ -36,14 +46,14 @@ class DiscourseRedis
   end
 
   def self.new_redis_store
-    redis_config = YAML::load(File.open("#{Rails.root}/config/redis.yml"))[Rails.env]
-    redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
+    redis_config = YAML.load(ERB.new(File.new("#{Rails.root}/config/redis.yml").read).result)[Rails.env]
+    redis_store = ActiveSupport::Cache::RedisStore.new "redis://#{(':' + redis_config['password'] + '@') if redis_config['password']}#{redis_config['host']}:#{redis_config['port']}/#{redis_config['cache_db']}"
     redis_store.options[:namespace] = -> { DiscourseRedis.namespace }
     redis_store
   end
 
   def url
-    "redis://#{@config['host']}:#{@config['port']}/#{@config['db']}"
+    "redis://#{(':' + @config['password'] + '@') if @config['password']}#{@config['host']}:#{@config['port']}/#{@config['db']}"
   end
 
 end

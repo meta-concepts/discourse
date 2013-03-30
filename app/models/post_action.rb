@@ -25,7 +25,7 @@ class PostAction < ActiveRecord::Base
                                            'topics.deleted_at' => nil).count('DISTINCT posts.id')
 
     $redis.set('posts_flagged_count', posts_flagged_count)
-    admins = User.where(admin: true).select(:id).map {|u| u.id}
+    admins = User.admins.select(:id).map {|u| u.id}
     MessageBus.publish('/flagged_counts', { total: posts_flagged_count }, { user_ids: admins })
   end
 
@@ -48,6 +48,10 @@ class PostAction < ActiveRecord::Base
     end
 
     user_actions
+  end
+
+  def self.count_likes_per_day(since = 30.days.ago)
+    where(post_action_type_id: PostActionType.types[:like]).where('created_at > ?', since).group('date(created_at)').order('date(created_at)').count
   end
 
   def self.clear_flags!(post, moderator_id, action_type_id = nil)
@@ -136,7 +140,7 @@ class PostAction < ActiveRecord::Base
 
     # Voting also changes the sort_order
     if post_action_type == :vote
-      Post.update_all ["vote_count = vote_count + :delta, sort_order = :max - (vote_count + :delta)", delta: delta, max: Topic::MAX_SORT_ORDER], id: post_id
+      Post.update_all ["vote_count = vote_count + :delta, sort_order = :max - (vote_count + :delta)", delta: delta, max: Topic.max_sort_order], id: post_id
     else
       Post.update_all ["#{column} = #{column} + ?", delta], id: post_id
     end
@@ -156,7 +160,7 @@ class PostAction < ActiveRecord::Base
       old_flags, new_flags = flag_counts['old_flags'].to_i, flag_counts['new_flags'].to_i
 
       if new_flags >= SiteSetting.flags_required_to_hide_post
-        reason = old_flags > 0 ? Post::HiddenReason::FLAG_THRESHOLD_REACHED_AGAIN : Post::HiddenReason::FLAG_THRESHOLD_REACHED
+        reason = old_flags > 0 ? Post.hidden_reasons[:flag_threshold_reached_again] : Post.hidden_reasons[:flag_threshold_reached]
         Post.update_all(["hidden = true, hidden_reason_id = COALESCE(hidden_reason_id, ?)", reason], id: post_id)
         Topic.update_all({ visible: false },
                          ["id = :topic_id AND NOT EXISTS(SELECT 1 FROM POSTS WHERE topic_id = :topic_id AND NOT hidden)", topic_id: post.topic_id])

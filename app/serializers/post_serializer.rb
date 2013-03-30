@@ -48,11 +48,12 @@ class PostSerializer < ApplicationSerializer
 
 
   def new_user?
+    # 21 calls = 5ms ... if there was a proper date in the RHS it would be 1ms 
     object.user.created_at > SiteSetting.new_user_period_days.days.ago
   end
 
   def moderator?
-    object.user.has_trust_level?(:moderator)
+    object.user.moderator?
   end
 
   def avatar_template
@@ -155,11 +156,11 @@ class PostSerializer < ApplicationSerializer
       # The following only applies if you're logged in
       if action_summary[:can_act] && scope.current_user.present?
         action_summary[:can_clear_flags] = scope.is_admin? && PostActionType.flag_types.values.include?(id)
+      end
 
-        if post_actions.present? && post_actions.has_key?(id)
-          action_summary[:acted] = true
-          action_summary[:can_undo] = scope.can_delete?(post_actions[id])
-        end
+      if post_actions.present? && post_actions.has_key?(id)
+        action_summary[:acted] = true
+        action_summary[:can_undo] = scope.can_delete?(post_actions[id])
       end
 
       # anonymize flags

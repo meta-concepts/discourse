@@ -12,7 +12,7 @@ gem 'redcarpet', require: false
 gem 'activerecord-postgres-hstore'
 gem 'acts_as_paranoid'
 gem 'active_attr' # until we get ActiveModel::Model with Rails 4
-# gem 'airbrake', '3.1.2' # errbit is broken with 3.1.3 for now
+gem 'airbrake', '3.1.2', require: false # errbit is broken with 3.1.3 for now
 gem 'clockwork', require: false
 gem 'em-redis'
 gem 'eventmachine'
@@ -54,8 +54,9 @@ gem 'sinatra', require: nil
 gem 'slim'  # required for sidekiq-web
 gem 'therubyracer', require: 'v8'
 gem 'thin'
-gem 'backup'
+gem 'diffy'
 
+gem 'backup'
 # Gem that enables support for plugins. It is required.
 gem 'discourse_plugin', path: 'vendor/gems/discourse_plugin'
 
@@ -100,7 +101,7 @@ end
 
 group :development do 
   gem 'better_errors'
-  gem 'binding_of_caller' # I tried adding this and got an occational crash
+  gem 'binding_of_caller'
   gem 'librarian', '>= 0.0.25', require: false
   gem 'pry-rails'  
 end

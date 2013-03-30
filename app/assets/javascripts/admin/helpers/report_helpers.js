@@ -7,7 +7,7 @@
 Handlebars.registerHelper('valueAtDaysAgo', function(property, i) {
   var data = Ember.Handlebars.get(this, property);
   if( data ) {
-    var wantedDate = Date.create(i + ' days ago').format('{yyyy}-{MM}-{dd}');
+    var wantedDate = Date.create(i + ' days ago', 'en').format('{yyyy}-{MM}-{dd}');
     var item = data.find( function(d, i, arr) { return d.x === wantedDate; } );
     if( item ) {
       return item.y;
@@ -26,7 +26,7 @@ Handlebars.registerHelper('valueAtDaysAgo', function(property, i) {
 Handlebars.registerHelper('sumLast', function(property, numDays) {
   var data = Ember.Handlebars.get(this, property);
   if( data ) {
-    var earliestDate = Date.create(numDays + ' days ago');
+    var earliestDate = Date.create(numDays + ' days ago', 'en');
     var sum = 0;
     data.each(function(d){
       if(Date.create(d.x) >= earliestDate) {
@@ -34,5 +34,23 @@ Handlebars.registerHelper('sumLast', function(property, numDays) {
       }
     });
     return sum;
+  }
+});
+
+/**
+  Return the count of users at the given trust level.
+
+  @method valueAtTrustLevel
+  @for Handlebars
+**/
+Handlebars.registerHelper('valueAtTrustLevel', function(property, trustLevel) {
+  var data = Ember.Handlebars.get(this, property);
+  if( data ) {
+    var item = data.find( function(d, i, arr) { return parseInt(d.x,10) === parseInt(trustLevel,10); } );
+    if( item ) {
+      return item.y;
+    } else {
+      return 0;
+    }
   }
 });

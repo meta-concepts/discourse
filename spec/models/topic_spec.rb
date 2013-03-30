@@ -1,6 +1,7 @@
 # encoding: UTF-8
 
 require 'spec_helper'
+require_dependency 'post_destroyer'
 
 describe Topic do
 
@@ -155,6 +156,24 @@ describe Topic do
   end
 
 
+  context 'similar_to' do
+
+    it 'returns blank with nil params' do
+      Topic.similar_to(nil, nil).should be_blank
+    end
+
+    context 'with a similar topic' do
+      let!(:topic) { Fabricate(:topic, title: "Evil trout is the dude who posted this topic") }
+
+      it 'returns the similar topic if the title is similar' do
+        Topic.similar_to("has evil trout made any topics?", "i am wondering has evil trout made any topics?").should == [topic]
+      end
+
+    end
+
+  end
+
+
   context 'message bus' do
     it 'calls the message bus observer after create' do
       MessageBusObserver.any_instance.expects(:after_create_topic).with(instance_of(Topic))
@@ -181,12 +200,18 @@ describe Topic do
 
   context 'move_posts' do
     let(:user) { Fabricate(:user) }
+    let(:another_user) { Fabricate(:evil_trout) }
     let(:category) { Fabricate(:category, user: user) }
     let!(:topic) { Fabricate(:topic, user: user, category: category) }
     let!(:p1) { Fabricate(:post, topic: topic, user: user) }
-    let!(:p2) { Fabricate(:post, topic: topic, user: user)}
+    let!(:p2) { Fabricate(:post, topic: topic, user: another_user)}
     let!(:p3) { Fabricate(:post, topic: topic, user: user)}
     let!(:p4) { Fabricate(:post, topic: topic, user: user)}
+
+    before do
+      # add a like to a post
+      PostAction.act(another_user, p4, PostActionType.types[:like])
+    end
 
     context 'success' do
 
@@ -233,8 +258,20 @@ describe Topic do
           new_topic.should be_present
         end
 
+        it "has the featured user" do
+          new_topic.featured_user1_id.should == another_user.id
+        end
+
+        it "has the correct like_count" do
+          new_topic.like_count.should == 1
+        end
+
         it "has the correct category" do
           new_topic.category.should == category
+        end
+
+        it "has removed the second poster from the featured users, since they moved" do
+          topic.featured_user1_id.should be_blank
         end
 
         it "has two posts" do
@@ -275,6 +312,14 @@ describe Topic do
       context "original topic" do
         before do
           topic.reload
+        end
+
+        it "has removed the second poster from the featured users, since they moved" do
+          topic.featured_user1_id.should be_blank
+        end
+
+        it "has the correct like_count" do
+          topic.like_count.should == 0
         end
 
         it "has 2 posts now" do
@@ -320,7 +365,7 @@ describe Topic do
     end
 
     it "should be excluded from the list view" do
-      TopicQuery.new(evil_trout).list_popular.topics.should_not include(topic)
+      TopicQuery.new(evil_trout).list_latest.topics.should_not include(topic)
     end
 
     context 'invite' do
@@ -388,15 +433,17 @@ describe Topic do
 
     context "other user" do
 
+      let(:creator) { PostCreator.new(topic.user, raw: Fabricate.build(:post).raw, topic_id: topic.id )}
+
       it "sends the other user an email when there's a new post" do
         UserNotifications.expects(:private_message).with(coding_horror, has_key(:post))
-        Fabricate(:post, topic: topic, user: topic.user)
+        creator.create
       end
 
       it "doesn't send the user an email when they have them disabled" do
         coding_horror.update_column(:email_private_messages, false)
         UserNotifications.expects(:private_message).with(coding_horror, has_key(:post)).never
-        Fabricate(:post, topic: topic, user: topic.user)
+        creator.create
       end
 
     end
@@ -468,7 +515,7 @@ describe Topic do
     end
 
     it 'has the moderator action type' do
-      @mod_post.post_type.should == Post::MODERATOR_ACTION
+      @mod_post.post_type.should == Post.types[:moderator_action]
     end
 
     it 'increases the moderator_posts count' do
@@ -496,6 +543,7 @@ describe Topic do
       @topic.reload
       @original_bumped_at = @topic.bumped_at.to_f
       @user = @topic.user
+      @user.admin = true
     end
 
     context 'visibility' do
@@ -757,46 +805,6 @@ describe Topic do
         topic_user = @second_user.topic_users.where(topic_id: @topic.id).first
         topic_user.posted?.should be_true
       end
-
-
-      context 'after deleting that post' do
-
-        before do
-          @new_post.destroy
-          Topic.reset_highest(@topic.id)
-          @topic.reload
-        end
-
-        it 'resets the last_poster_id back to the OP' do
-          @topic.last_post_user_id.should == @user.id
-        end
-
-        it 'resets the last_posted_at back to the OP' do
-          @topic.last_posted_at.to_i.should == @post.created_at.to_i
-        end
-
-        context 'topic_user' do
-          before do
-            @topic_user = @second_user.topic_users.where(topic_id: @topic.id).first
-          end
-
-          it 'clears the posted flag for the second user' do
-            @topic_user.posted?.should be_false
-          end
-
-          it "sets the second user's last_read_post_number back to 1" do
-            @topic_user.last_read_post_number.should == 1
-          end
-
-          it "sets the second user's last_read_post_number back to 1" do
-            @topic_user.seen_post_count.should == 1
-          end
-
-        end
-
-
-      end
-
     end
 
   end
@@ -816,7 +824,7 @@ describe Topic do
   end
 
   describe 'meta data' do
-    let(:topic) { Fabricate(:topic, :meta_data => {hello: 'world'}) }
+    let(:topic) { Fabricate(:topic, meta_data: {hello: 'world'}) }
 
     it 'allows us to create a topic with meta data' do
       topic.meta_data['hello'].should == 'world'
@@ -864,6 +872,10 @@ describe Topic do
 
     it 'is not a best_of' do
       topic.has_best_of.should be_false
+    end
+
+    it "is the 1.0 percent rank" do
+      topic.percent_rank.should == 1.0
     end
 
     it 'is not invisible' do

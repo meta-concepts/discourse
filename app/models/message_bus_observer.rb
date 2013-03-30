@@ -1,18 +1,9 @@
-require_dependency 'message_bus'
 require_dependency 'discourse_observer'
 
 # This class is responsible for notifying the message bus of various
 # events.
 class MessageBusObserver < DiscourseObserver
-  observe :post, :notification, :user_action, :topic
-
-  def after_create_post(post)
-    MessageBus.publish("/topic/#{post.topic_id}",
-                        id: post.id,
-                        created_at: post.created_at,
-                        user: BasicUserSerializer.new(post.user).as_json(root: false),
-                        post_number: post.post_number)
-  end
+  observe :notification, :user_action, :topic
 
   def after_create_notification(notification)
     refresh_notification_count(notification)
@@ -36,7 +27,7 @@ class MessageBusObserver < DiscourseObserver
     topic.posters = topic.posters_summary
     topic.posts_count = 1
     topic_json = TopicListItemSerializer.new(topic).as_json
-    MessageBus.publish("/popular", topic_json)
+    MessageBus.publish("/latest", topic_json)
 
     # If it has a category, add it to the category views too
     if topic.category.present?

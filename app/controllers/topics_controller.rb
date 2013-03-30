@@ -20,7 +20,7 @@ class TopicsController < ApplicationController
   before_filter :consider_user_for_promotion, only: :show
 
   skip_before_filter :check_xhr, only: [:avatar, :show, :feed]
-  caches_action :avatar, :cache_path => Proc.new {|c| "#{c.params[:post_number]}-#{c.params[:topic_id]}" }
+  caches_action :avatar, cache_path: Proc.new {|c| "#{c.params[:post_number]}-#{c.params[:topic_id]}" }
 
 
   def show
@@ -57,6 +57,17 @@ class TopicsController < ApplicationController
     end
 
     render nothing: true
+  end
+
+  def similar_to
+    requires_parameters(:title, :raw)
+    title, raw = params[:title], params[:raw]
+
+    raise Discourse::InvalidParameters.new(:title) if title.length < SiteSetting.min_title_similar_length
+    raise Discourse::InvalidParameters.new(:raw) if raw.length < SiteSetting.min_body_similar_length
+
+    topics = Topic.similar_to(title, raw)
+    render_serialized(topics, BasicTopicSerializer)
   end
 
   def status
@@ -157,7 +168,7 @@ class TopicsController < ApplicationController
   private
 
   def create_topic_view
-    opts = params.slice(:username_filters, :best_of, :page, :post_number, :posts_before, :posts_after)
+    opts = params.slice(:username_filters, :best_of, :page, :post_number, :posts_before, :posts_after, :best)
     @topic_view = TopicView.new(params[:id] || params[:topic_id], current_user, opts)
   end
 

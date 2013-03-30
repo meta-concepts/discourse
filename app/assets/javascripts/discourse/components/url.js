@@ -14,6 +14,14 @@ Discourse.URL = {
   MORE_REGEXP: /\/more$/,
 
   /**
+    Will be pre-pended to path upon state change
+
+    @property rootURL
+    @default '/'
+  */
+  rootURL: '/',
+
+  /**
     @private
 
     Get a handle on the application's router. Note that currently it uses `__container__` which is not
@@ -61,6 +69,13 @@ Discourse.URL = {
   routeTo: function(path) {
     var oldPath = window.location.pathname;
     path = path.replace(/https?\:\/\/[^\/]+/, '');
+    /*
+      If the URL is absolute, remove rootURL
+     */
+    if (path.match(/^\//)) {
+      var rootURL = this.rootURL.replace(/\/$/, '');
+      path = path.replace(rootURL, '');
+    }
 
     /*
       If the URL is in the topic form, /t/something/:topic_id/:post_number
@@ -79,7 +94,8 @@ Discourse.URL = {
         var topicController = Discourse.__container__.lookup('controller:topic');
         var opts = { trackVisit: false };
         if (newMatches[3]) opts.nearPost = newMatches[3];
-        topicController.get('content').loadPosts(opts);
+        topicController.cancelFilter();
+        topicController.loadPosts(opts);
 
         // Abort routing, we have replaced our state.
         return;

@@ -47,6 +47,9 @@ class User < ActiveRecord::Base
   # This is just used to pass some information into the serializer
   attr_accessor :notification_channel_position
 
+  scope :admins, ->{ where(admin: true) }
+  scope :moderators, ->{ where(moderator: true) }
+
   module NewTopicDuration
     ALWAYS = -1
     LAST_VISIT = -2
@@ -237,7 +240,10 @@ class User < ActiveRecord::Base
   end
 
   def moderator?
-    has_trust_level?(:moderator)
+    # this saves us from checking both, admins are always moderators 
+    #
+    # in future we may split this out
+    admin || moderator
   end
 
   def regular?
@@ -399,7 +405,12 @@ class User < ActiveRecord::Base
   # Takes into account admin, etc.
   def has_trust_level?(level)
     raise "Invalid trust level #{level}" unless TrustLevel.valid_level?(level)
-    admin? || TrustLevel.compare(trust_level, level)
+    admin? || moderator? || TrustLevel.compare(trust_level, level)
+  end
+
+  # a touch faster than automatic
+  def admin? 
+    admin
   end
 
   def change_trust_level(level)
@@ -462,6 +473,10 @@ class User < ActiveRecord::Base
     where('created_at > ?', since).group('date(created_at)').order('date(created_at)').count
   end
 
+  def self.counts_by_trust_level
+    group('trust_level').count
+  end
+
   protected
 
     def cook
@@ -501,8 +516,8 @@ class User < ActiveRecord::Base
     end
 
     def add_trust_level
-      # there is a possiblity we did no load trust level column, skip it
-      return unless attributes.key? "trust_level"
+      # there is a possiblity we did not load trust level column, skip it
+      return unless has_attribute? :trust_level
       self.trust_level ||= SiteSetting.default_trust_level
     end
 
@@ -520,13 +535,21 @@ class User < ActiveRecord::Base
     end
 
     def email_validator
-      if (setting = SiteSetting.email_domains_blacklist).present?
-        domains = setting.gsub('.', '\.')
-        regexp = Regexp.new("@(#{domains})", true)
-        if self.email =~ regexp
+      if (setting = SiteSetting.email_domains_whitelist).present?
+        unless email_in_restriction_setting?(setting)
+          errors.add(:email, I18n.t(:'user.email.not_allowed'))
+        end
+      elsif (setting = SiteSetting.email_domains_blacklist).present?
+        if email_in_restriction_setting?(setting)
           errors.add(:email, I18n.t(:'user.email.not_allowed'))
         end
       end
+    end
+    
+    def email_in_restriction_setting?(setting)
+      domains = setting.gsub('.', '\.')
+      regexp = Regexp.new("@(#{domains})", true)
+      self.email =~ regexp
     end
 
     def password_validator

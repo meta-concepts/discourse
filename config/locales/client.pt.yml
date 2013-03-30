@@ -1,7 +1,8 @@
+# encoding: utf-8
 # This file contains content for the client portion of Discourse, sent out
 # to the Javascript app.
 
-en:
+pt:
   js:
     share:
       topic: 'partilhe um link para este tópico'
@@ -280,7 +281,7 @@ en:
       posted: "<i title='replied' class='icon icon-reply'></i> {{username}} {{link}}"
       edited: "<i title='edited' class='icon icon-pencil'></i> {{username}} {{link}}"
       liked: "<i title='liked' class='icon icon-heart'></i> {{username}} {{link}}"
-      private_message: "<i class='icon icon-lock' title='private message'></i> {{username}} enviou-te uma mensagem privada: {{link}}"
+      private_message: "<i class='icon icon-envelope-alt' title='private message'></i> {{username}} enviou-te uma mensagem privada: {{link}}"
       invited_to_private_message: "{{username}} convidou-te para uma conversa privada: {{link}}"
       invitee_accepted: "<i title='accepted your invitation' class='icon icon-signin'></i> {{username}} aceitou o teu convite"
       moved_post: "<i title='moved post' class='icon icon-arrow-right'></i> {{username}} moveu o post para {{link}}"
@@ -314,7 +315,7 @@ en:
       no_new: "Não tens novos tópicos para ler."
       no_read: "Ainda não leste nenhum tópico."
       no_posted: "Ainda não postaste em nenhum tópico."
-      no_popular: "Não há tópicos populares. Isso é triste."
+      no_latest: "Não há tópicos populares. Isso é triste."
       footer: "Não há mais tópicos neste categoria. <a href=\"/categories\">Procurar todas as categorias</a> ou <a href=\"/\">ver tópicos populares</a>"
 
     topic:
@@ -338,10 +339,11 @@ en:
       options: "Opções do Tópico"
       show_links: "mostrar links dentro deste post"
       toggle_information: "alternar detalhes do tópico"
-      read_more_in_category: "Queres ler mais? Procura outros tópicos em {{catLink}} ou {{popularLink}}."
-      read_more: "Queres ler mais? {{catLink}} ou {{popularLink}}."
+      read_more_in_category: "Queres ler mais? Procura outros tópicos em {{catLink}} ou {{latestLink}}."
+      read_more: "Queres ler mais? {{catLink}} ou {{latestLink}}."
       browse_all_categories: Procurar todas as categorias
-      view_popular_topics: ver tópicos populares
+
+      view_latest_topics: ver tópicos populares
 
       progress:
         title: progresso do tópico
@@ -554,7 +556,7 @@ en:
     categories_list: "Lista de Categorias"
 
     filters:
-      popular:
+      latest:
         title: "Populares"
         help: "os tópicos recentes mais populares"
       favorited:

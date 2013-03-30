@@ -42,7 +42,7 @@ Discourse.Topic = Discourse.Model.extend({
     if (slug.isBlank()) {
       slug = "topic";
     }
-    return "/t/" + slug + "/" + (this.get('id'));
+    return Discourse.getURL("/t/") + slug + "/" + (this.get('id'));
   }).property('id', 'slug'),
 
   // Helper to build a Url with a post number
@@ -127,11 +127,6 @@ Discourse.Topic = Discourse.Model.extend({
     return this.get('archetype') === 'private_message';
   }).property('archetype'),
 
-  // Does this topic only have a single post?
-  singlePost: (function() {
-    return this.get('posts_count') === 1;
-  }).property('posts_count'),
-
   toggleStatus: function(property) {
     this.toggleProperty(property);
     return $.post("" + (this.get('url')) + "/status", {
@@ -140,6 +135,14 @@ Discourse.Topic = Discourse.Model.extend({
       enabled: this.get(property) ? 'true' : 'false'
     });
   },
+
+  favoriteTooltipKey: (function() {
+    return this.get('starred') ? 'favorite.help.unstar' : 'favorite.help.star';
+  }).property('starred'),
+
+  favoriteTooltip: (function() {
+    return Em.String.i18n(this.get('favoriteTooltipKey'));
+  }).property('favoriteTooltipKey'),
 
   toggleStar: function() {
     var topic = this;
@@ -169,7 +172,7 @@ Discourse.Topic = Discourse.Model.extend({
 
   // Reset our read data for this topic
   resetRead: function(callback) {
-    return $.ajax("/t/" + (this.get('id')) + "/timings", {
+    return $.ajax(Discourse.getURL("/t/") + (this.get('id')) + "/timings", {
       type: 'DELETE',
       success: function() {
         return typeof callback === "function" ? callback() : void 0;
@@ -181,7 +184,7 @@ Discourse.Topic = Discourse.Model.extend({
   inviteUser: function(user) {
     return $.ajax({
       type: 'POST',
-      url: "/t/" + (this.get('id')) + "/invite",
+      url: Discourse.getURL("/t/") + (this.get('id')) + "/invite",
       data: {
         user: user
       }
@@ -189,13 +192,8 @@ Discourse.Topic = Discourse.Model.extend({
   },
 
   // Delete this topic
-  "delete": function(callback) {
-    return $.ajax("/t/" + (this.get('id')), {
-      type: 'DELETE',
-      success: function() {
-        return typeof callback === "function" ? callback() : void 0;
-      }
-    });
+  destroy: function() {
+    return $.ajax(Discourse.getURL("/t/") + (this.get('id')), { type: 'DELETE' });
   },
 
   // Load the posts for this topic
@@ -207,8 +205,11 @@ Discourse.Topic = Discourse.Model.extend({
     // Load the first post by default
     if ((!opts.bestOf) && (!opts.nearPost)) opts.nearPost = 1;
 
-    // If we already have that post in the DOM, jump to it
-    if (Discourse.TopicView.scrollTo(this.get('id'), opts.nearPost)) return;
+    // If we already have that post in the DOM, jump to it. Return a promise
+    // that's already complete.
+    if (Discourse.TopicView.scrollTo(this.get('id'), opts.nearPost)) {
+      return Ember.Deferred.promise(function(promise) { promise.resolve(); });
+    }
 
     // If loading the topic succeeded...
     var afterTopicLoaded = function(result) {
@@ -286,7 +287,7 @@ Discourse.Topic = Discourse.Model.extend({
     }
 
     // Finally, call our find method
-    Discourse.Topic.find(this.get('id'), {
+    return Discourse.Topic.find(this.get('id'), {
       nearPost: opts.nearPost,
       bestOf: opts.bestOf,
       trackVisit: opts.trackVisit
@@ -306,7 +307,7 @@ Discourse.Topic = Discourse.Model.extend({
     this.set('notification_level', v);
     this.set('notifications_reason_id', null);
     return $.ajax({
-      url: "/t/" + (this.get('id')) + "/notifications",
+      url: Discourse.getURL("/t/") + (this.get('id')) + "/notifications",
       type: 'POST',
       data: {
         notification_level: v
@@ -341,7 +342,7 @@ Discourse.Topic = Discourse.Model.extend({
     // Clear the pin optimistically from the object
     topic.set('pinned', false);
 
-    $.ajax("/t/" + this.get('id') + "/clear-pin", {
+    $.ajax(Discourse.getURL("/t/") + this.get('id') + "/clear-pin", {
       type: 'PUT',
       error: function() {
         // On error, put the pin back
@@ -372,12 +373,26 @@ Discourse.Topic.reopenClass({
     MUTE: 0
   },
 
+  /**
+    Find similar topics to a given title and body
+
+    @method findSimilar
+    @param {String} title The current title
+    @param {String} body The current body
+    @returns A promise that will resolve to the topics
+  **/
+  findSimilarTo: function(title, body) {
+    return $.ajax({url: Discourse.getURL("/topics/similar_to"), data: {title: title, raw: body} }).then(function (results) {
+      return results.map(function(topic) { return Discourse.Topic.create(topic) });
+    });
+  },
+
   // Load a topic, but accepts a set of filters
   //  options:
   //    onLoad - the callback after the topic is loaded
   find: function(topicId, opts) {
     var data, promise, url;
-    url = "/t/" + topicId;
+    url = Discourse.getURL("/t/") + topicId;
 
     if (opts.nearPost) {
       url += "/" + opts.nearPost;
@@ -398,7 +413,7 @@ Discourse.Topic.reopenClass({
     if (opts.userFilters && opts.userFilters.length > 0) {
       data.username_filters = [];
       opts.userFilters.forEach(function(username) {
-        return data.username_filters.push(username);
+        data.username_filters.push(username);
       });
     }
 
@@ -408,25 +423,20 @@ Discourse.Topic.reopenClass({
     }
 
     // Check the preload store. If not, load it via JSON
-    promise = new RSVP.Promise();
-    PreloadStore.get("topic_" + topicId, function() {
+    return PreloadStore.getAndRemove("topic_" + topicId, function() {
       return $.getJSON(url + ".json", data);
     }).then(function(result) {
-      var first;
-      first = result.posts.first();
+      var first = result.posts.first();
       if (first && opts && opts.bestOf) {
         first.bestOfFirst = true;
       }
-      return promise.resolve(result);
-    }, function(result) {
-      return promise.reject(result);
+      return result;
     });
-    return promise;
   },
 
   // Create a topic from posts
   movePosts: function(topicId, title, postIds) {
-    return $.ajax("/t/" + topicId + "/move-posts", {
+    return $.ajax(Discourse.getURL(Discourse.getURL("/t/")) + topicId + "/move-posts", {
       type: 'POST',
       data: { title: title, post_ids: postIds }
     });

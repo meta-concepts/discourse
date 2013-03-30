@@ -5,14 +5,14 @@ module PrettyText
 
   def self.whitelist
     {
-      :elements => %w[
+      elements: %w[
         a abbr aside b bdo blockquote br caption cite code col colgroup dd div del dfn dl
         dt em hr figcaption figure h1 h2 h3 h4 h5 h6 hgroup i img ins kbd li mark
         ol p pre q rp rt ruby s samp small span strike strong sub sup table tbody td
         tfoot th thead time tr u ul var wbr
       ],
 
-      :attributes => {
+      attributes: {
         :all         => ['dir', 'lang', 'title', 'class'],
         'aside'      => ['data-post', 'data-full', 'data-topic'],
         'a'          => ['href'],
@@ -32,7 +32,7 @@ module PrettyText
         'ul'         => ['type']
       },
 
-      :protocols => {
+      protocols: {
         'a'          => {'href' => ['ftp', 'http', 'https', 'mailto', :relative]},
         'blockquote' => {'cite' => ['http', 'https', :relative]},
         'del'        => {'cite' => ['http', 'https', :relative]},
@@ -65,7 +65,7 @@ module PrettyText
   @mutex = Mutex.new
 
   def self.mention_matcher
-    /(\@[a-zA-Z0-9\-]+)/
+    Regexp.new("(\@[a-zA-Z0-9_]{#{User.username_length.begin},#{User.username_length.end}})")
   end
 
   def self.app_root
@@ -120,6 +120,7 @@ module PrettyText
       # we need to do this to work in a multi site environment, many sites, many settings
       v8.eval("Discourse.SiteSettings = #{SiteSetting.client_settings_json};")
       v8.eval("Discourse.BaseUrl = 'http://#{RailsMultisite::ConnectionManagement.current_hostname}';")
+      v8.eval("Discourse.getURL = function(url) {return '#{Discourse::base_uri}' + url};")
       v8['opts'] = opts || {}
       v8['raw'] = text
       v8.eval('opts["mentionLookup"] = function(u){return helpers.is_username_valid(u);}')

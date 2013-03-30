@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'guardian'
+require_dependency 'post_destroyer'
 
 describe Guardian do
 
@@ -373,11 +374,11 @@ describe Guardian do
 
         it "isn't allowed if the user voted and the topic doesn't allow multiple votes" do
           Topic.any_instance.expects(:has_meta_data_boolean?).with(:single_vote).returns(true)
-          Guardian.new(user).can_vote?(post, :voted_in_topic => true).should be_false
+          Guardian.new(user).can_vote?(post, voted_in_topic: true).should be_false
         end
 
         it "is allowed if the user voted and the topic doesn't allow multiple votes" do
-          Guardian.new(user).can_vote?(post, :voted_in_topic => false).should be_true
+          Guardian.new(user).can_vote?(post, voted_in_topic: false).should be_true
         end
       end
 
@@ -620,7 +621,7 @@ describe Guardian do
       end
 
       it "returns false when trying to delete your own post that has already been deleted" do
-        post.delete_by(user)
+        PostDestroyer.new(user, post).destroy
         post.reload
         Guardian.new(user).can_delete?(post).should be_false
       end
